@@ -34,7 +34,7 @@ function App() {
     if (!file) return alert("Please upload a child's facial image.");
     
     setLoading(true);
-    setResult(null); // Clear previous results to avoid confusion
+    setResult(null); // Clear previous results
     
     // Prepare Data for Backend
     const data = new FormData();
@@ -42,12 +42,16 @@ function App() {
     data.append('patient_data', JSON.stringify(formData));
 
     try {
-      // Send Request to Python Backend
-      const response = await axios.post('http://localhost:8000/predict', data);
+      // ✅ CONNECTS TO YOUR LIVE HUGGING FACE API
+      const response = await axios.post(
+        'https://sumoy47-autism-detection-api.hf.space/predict', 
+        data
+      );
       setResult(response.data);
     } catch (error) {
       console.error(error);
-      setResult({ error: "Could not connect to the AI Server. Is 'main.py' running?" });
+      // ✅ Updated Error Message for Production
+      setResult({ error: "Server is busy or starting up. Please wait 1 minute and try again." });
     }
     setLoading(false);
   };
@@ -141,7 +145,7 @@ function App() {
               <div className={`diagnosis-box ${result.diagnosis === 'Autistic' ? 'risk' : 'safe'}`}>
                 <h3>{result.diagnosis.toUpperCase()}</h3>
                 
-                {/* FIXED CONFIDENCE LOGIC */}
+                {/* CONFIDENCE LOGIC */}
                 <p>
                   Confidence: {
                     result.diagnosis === 'Autistic' 
