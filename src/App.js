@@ -42,7 +42,7 @@ function App() {
     data.append('patient_data', JSON.stringify(formData));
 
     try {
-      // ✅ CONNECTS TO YOUR LIVE HUGGING FACE API
+      // ✅ LIVE HUGGING FACE URL
       const response = await axios.post(
         'https://sumoy47-autism-detection-api.hf.space/predict', 
         data
@@ -50,8 +50,7 @@ function App() {
       setResult(response.data);
     } catch (error) {
       console.error(error);
-      // ✅ Updated Error Message for Production
-      setResult({ error: "Server is busy or starting up. Please wait 1 minute and try again." });
+      setResult({ error: "Server is busy. Please wait 1 minute and try again." });
     }
     setLoading(false);
   };
@@ -71,7 +70,7 @@ function App() {
           <h2>1. Clinical Data</h2>
           <form onSubmit={handleSubmit}>
             <div className="grid-container">
-              {/* Generate A1-A10 Dropdowns dynamically */}
+              {/* Generate A1-A10 Dropdowns */}
               {[...Array(10)].map((_, i) => (
                 <div key={i} className="form-group">
                   <label>A{i+1} Score</label>
@@ -86,7 +85,15 @@ function App() {
             <div className="grid-container">
               <div className="form-group">
                 <label>Age (Months)</label>
-                <input type="number" name="Age" value={formData.Age} onChange={handleChange} min="1" max="100" />
+                {/* ✅ UPDATED AGE RANGE: 1 to 300 */}
+                <input 
+                  type="number" 
+                  name="Age" 
+                  value={formData.Age} 
+                  onChange={handleChange} 
+                  min="1" 
+                  max="300" 
+                />
               </div>
               <div className="form-group">
                 <label>Sex</label>
@@ -127,10 +134,8 @@ function App() {
         <div className="card result-section">
           <h2>3. Diagnosis & XAI</h2>
           
-          {/* A. Loading State */}
           {loading && <div className="placeholder animate-pulse">Running Neural Models...</div>}
 
-          {/* B. Error State */}
           {!loading && result && result.error && (
             <div className="diagnosis-box" style={{background: '#e74c3c'}}>
               <h3>SYSTEM ERROR</h3>
@@ -138,14 +143,12 @@ function App() {
             </div>
           )}
 
-          {/* C. Success State */}
           {!loading && result && result.diagnosis && (
             <div className="fade-in">
-              {/* Diagnosis Box */}
+              {/* ✅ ROBUST DIAGNOSIS BOX */}
               <div className={`diagnosis-box ${result.diagnosis === 'Autistic' ? 'risk' : 'safe'}`}>
                 <h3>{result.diagnosis.toUpperCase()}</h3>
                 
-                {/* CONFIDENCE LOGIC */}
                 <p>
                   Confidence: {
                     result.diagnosis === 'Autistic' 
@@ -155,18 +158,16 @@ function App() {
                 </p>
               </div>
 
-              {/* Explainable AI Image */}
               <h4>Visual Attribution (Grad-CAM)</h4>
               <div className="xai-container">
                 <img src={result.xai_image} alt="Grad-CAM Heatmap" className="xai-img" />
               </div>
               <p className="note">
-                *Heatmap highlights facial features (eyes/mouth/philtrum) influencing the model's decision.
+                *Heatmap highlights facial features influencing the AI decision.
               </p>
             </div>
           )}
 
-          {/* D. Empty State */}
           {!loading && !result && (
             <div className="placeholder">
               <p>Waiting for patient data...</p>
