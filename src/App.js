@@ -86,7 +86,7 @@ function App() {
             <div className="grid-container">
               <div className="form-group">
                 <label>Age (Months)</label>
-                <input type="number" name="Age" value={formData.Age} onChange={handleChange} min="12" max="360" />
+                <input type="number" name="Age" value={formData.Age} onChange={handleChange} min="1" max="100" />
               </div>
               <div className="form-group">
                 <label>Sex</label>
